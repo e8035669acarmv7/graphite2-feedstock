@@ -2,6 +2,11 @@
 
 set -ex
 
+if [[ "$target_platform" == "osx-arm64" ]]; then
+  # Remove x86 specific flags. Upstream assumes Darwin is x86
+  sed -i.bak 's/-mfpmath=sse -msse2//g' src/CMakeLists.txt
+fi
+
 mkdir build
 cd build
 cmake ${CMAKE_ARGS} \
