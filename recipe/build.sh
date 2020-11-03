@@ -1,24 +1,19 @@
 #! /bin/bash
 
-set -e
+set -ex
 
-cmake_args=(
-    -DCMAKE_BUILD_TYPE=Release
-    -DCMAKE_COLOR_MAKEFILE=OFF
-    -DCMAKE_INSTALL_PREFIX=$PREFIX
-)
-
-if [ $(uname) = Darwin ] ; then
-    cmake_args+=(
-        -DCMAKE_CXX_FLAGS="$CXXFLAGS -stdlib=libc++"
-	-DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOSX_DEPLOYMENT_TARGET
-	-DCMAKE_OSX_SYSROOT=/
-    )
+if [[ "$target_platform" == "osx-arm64" ]]; then
+  # Remove x86 specific flags. Upstream assumes Darwin is x86
+  sed -i.bak 's/-mfpmath=sse -msse2//g' src/CMakeLists.txt
 fi
 
 mkdir build
 cd build
-cmake "${cmake_args[@]}" ..
+cmake ${CMAKE_ARGS} \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_COLOR_MAKEFILE=OFF \
+  -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+  ..
 make -j$CPU_COUNT VERBOSE=1
 # make test -- these do not pass
 make install
