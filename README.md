@@ -3,7 +3,7 @@ About graphite2
 
 Home: http://graphite.sil.org/
 
-Package license: LGPLv2
+Package license: LGPL-2.0-or-later
 
 Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/graphite2-feedstock/blob/master/LICENSE.txt)
 
