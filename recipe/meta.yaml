@@ -18,7 +18,7 @@ source:
     - 004-graphite2-1.3.12-dllimport-fix.patch  # [win]
 
 build:
-  number: 1002
+  number: 1003
   detect_binary_files_with_prefix: true
 
 requirements:
@@ -27,13 +27,22 @@ requirements:
     - m2-patch  # [win]
     - cmake
     - ninja  # [win]
-    - {{ compiler('c') }}    # [not win]
-    - {{ compiler('cxx') }}  # [not win]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - make                   # [unix]
   host:
 
 test:
   commands:
+    - test -f $PREFIX/lib/pkgconfig/graphite2.pc  # [unix]
+    - test -f $PREFIX/share/graphite2/graphite2.cmake  # [unix]
+    - test -f $PREFIX/include/graphite2/Font.h  # [unix]
+    - test -f $PREFIX/lib/libgraphite2${SHLIB_EXT}  # [unix]
+    - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\graphite2.pc exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\share\\graphite2\\graphite2.cmake exit 1  # [win]
+    - if not exist %LIBRARY_INC%\\graphite2\\Font.h exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\graphite2.lib exit 1  # [win]
+    - if not exist %LIBRARY_BIN%\\graphite2.dll exit 1  # [win]
     - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
     - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
